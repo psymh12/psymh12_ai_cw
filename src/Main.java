@@ -42,8 +42,6 @@ public class Main {
 
         /*
         instances = solutionPop.getInstances();
-        System.out.println(solutionPop.getN());
-        System.out.println(solutionPop.getW());
         System.out.println(Arrays.deepToString(instances.toArray()));
         for(int anum : solutionPop.getSolution()) System.out.println(anum);
          */

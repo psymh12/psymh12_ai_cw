@@ -2,6 +2,40 @@ import java.util.Random;
 
 public class HillClimbingHeuristic {
     private Random rand = new Random();
+    private double dos;
+
+    public void setDos(double dos) {
+        this.dos = dos;
+    }
+
+    public void applyDBHCWithDoS(SolutionPop problem, int pop_index) {
+        int iterations;
+
+        if (0.0 <= dos && dos < 0.2) {
+            iterations = 1;
+        } else if (0.2 <= dos && dos < 0.4) {
+            iterations = 2;
+        } else if (0.4 <= dos && dos < 0.6) {
+            iterations = 3;
+        } else if (0.6 <= dos && dos < 0.8) {
+            iterations = 4;
+        } else if (0.8 <= dos && dos < 1) {
+            iterations = 5;
+        } else if (dos == 1) {
+            iterations = 6;
+        } else {
+            iterations = 1;
+        }
+
+        for (int i = 0; i < iterations; i++) {
+            int before = (int) problem.getObjectiveValue(pop_index);
+            applyDBHC(problem, pop_index);
+            int after = (int) problem.getObjectiveValue(pop_index);
+            if (before >= after) {
+                break;
+            }
+        }
+    }
 
     public void applyDBHC(SolutionPop problem, int pop_index) {
         double bestEval = problem.getObjectiveValue(pop_index);
