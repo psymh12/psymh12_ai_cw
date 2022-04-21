@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
@@ -33,7 +32,6 @@ public class SolutionPop {
 
             meme_store[x] = meme_element;
         }
-        for (double[] meme_ele : meme_store) System.out.println(Arrays.toString(meme_ele));
     }
 
     public ArrayList<ArrayList<Double>> getInstances() {
@@ -42,6 +40,10 @@ public class SolutionPop {
 
     public int[] getSolution(int pop_index) {
         return solutions[pop_index];
+    }
+
+    public double[][] getMemeStore() {
+        return meme_store;
     }
 
     public double[] getMemeplex(int meme_index) {

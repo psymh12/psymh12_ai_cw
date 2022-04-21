@@ -17,80 +17,77 @@ public class Main {
     private static MutationHeuristic mutationHeuristic;
     private static ReplacementHeuristic replacementHeuristic;
 
-    /* data access examples:
-
-        ArrayList<Double> bruh = instances.get(0);
-        Double jit = bruh.get(0);
-
-        System.out.println(jit);
-        System.out.println(Arrays.toString(bruh.toArray()));
-        System.out.println(Arrays.deepToString(instances.toArray()));
-         */
     public static void main(String[] args) {
-        try {
-            instances = readInstance("testinstance.txt");
-        } catch (IOException e) {
-            System.out.println("Error: File read failed.");
-        }
+        String instanceName = "hidden4_15_375";
+        for (int trial_num = 0; trial_num < 5; trial_num++) {
+            try {
+                instances = readInstance(instanceName + ".txt");
+            } catch (IOException e) {
+                System.out.println("Error: File read failed.");
+            }
 
-        solutionPop = new SolutionPop(instances);
-        hillClimbingHeuristic = new HillClimbingHeuristic();
-        selectionHeuristic = new SelectionHeuristic();
-        xoHeuristic = new XOHeuristic(0.99);
-        mutationHeuristic = new MutationHeuristic(1.0 / solutionPop.getSolution(0).length, 0.25);
-        replacementHeuristic = new ReplacementHeuristic();
+            solutionPop = new SolutionPop(instances);
+            hillClimbingHeuristic = new HillClimbingHeuristic();
+            selectionHeuristic = new SelectionHeuristic();
+            xoHeuristic = new XOHeuristic(0.99);
+            mutationHeuristic = new MutationHeuristic(1.0 / solutionPop.getSolution(0).length, 0.15);
+            replacementHeuristic = new ReplacementHeuristic();
 
-        /*
-        instances = solutionPop.getInstances();
-        System.out.println(Arrays.deepToString(instances.toArray()));
-        for(int anum : solutionPop.getSolution()) System.out.println(anum);
-         */
+            for (int i = 0; i < 150; i++) {
+                int p1_index = selectionHeuristic.tournamentSelection(solutionPop);
+                int p2_index = selectionHeuristic.tournamentSelection(solutionPop);
 
-        for (int i = 0; i < 150; i++) {
-            System.out.println("GENERATION " + i);
-            System.out.println("BEST OBJECTIVE VALUE: " + solutionPop.getHighestObjectiveValue());
-            System.out.println("--------------------------------------------------------");
+                while (p1_index == p2_index) p2_index = selectionHeuristic.tournamentSelection(solutionPop);
 
-            int[][] solutions = solutionPop.getSolutions();
-            for (int[] temp_sol : solutions) System.out.println(Arrays.toString(temp_sol));
-            int p1_index = selectionHeuristic.tournamentSelection(solutionPop);
-            int p2_index = selectionHeuristic.tournamentSelection(solutionPop);
+                double[] child_memeplex = xoHeuristic.returnChildMemeplex(solutionPop, p1_index, p2_index); //
 
-            while (p1_index == p2_index) p2_index = selectionHeuristic.tournamentSelection(solutionPop);
+                int[][] child_solutions;
+                if (child_memeplex[0] == 1.0) {
+                    child_solutions = xoHeuristic.singlePointXO(solutionPop, p1_index, p2_index);
+                } else if (child_memeplex[0] == 2.0) {
+                    child_solutions = xoHeuristic.doublePointXO(solutionPop, p1_index, p2_index);
+                } else if (child_memeplex[0] == 3.0) {
+                    child_solutions = xoHeuristic.uniformXO(solutionPop, p1_index, p2_index);
+                } else {
+                    child_solutions = xoHeuristic.singlePointXO(solutionPop, p1_index, p2_index);
+                }
 
-            System.out.println("Parent 1 index = " + p1_index + " | " + Arrays.toString(solutionPop.getSolution(p1_index)));
-            System.out.println("Parent 2 index = " + p2_index + " | " + Arrays.toString(solutionPop.getSolution(p2_index)));
+                child_memeplex = mutationHeuristic.mutateMemeplex(child_memeplex); //
 
-            int[][] child_solutions = xoHeuristic.singlePointXO(solutionPop, p1_index, p2_index);
-            double[] child_memeplex = xoHeuristic.returnChildMemeplex(solutionPop, p1_index, p2_index); //
+                mutationHeuristic.setIom(child_memeplex[1]);
 
-            int[] child1_mutation = mutationHeuristic.bitFlip(child_solutions[0]);
-            int[] child2_mutation = mutationHeuristic.bitFlip(child_solutions[1]);
-            child_memeplex = mutationHeuristic.mutateMemeplex(child_memeplex); //
+                int[] child1_mutation = mutationHeuristic.bitFlipWithIoM(child_solutions[0]);
+                int[] child2_mutation = mutationHeuristic.bitFlipWithIoM(child_solutions[1]);
 
-            System.out.println("Child 1 (mutated): " + Arrays.toString(child1_mutation));
-            System.out.println("Child 2 (mutated): " + Arrays.toString(child2_mutation));
+                hillClimbingHeuristic.setDos(child_memeplex[2]);
 
-            hillClimbingHeuristic.applyDBHC(solutionPop, child1_mutation);
-            hillClimbingHeuristic.applyDBHC(solutionPop, child2_mutation);
-            System.out.println("Child 1 (HC applied): " + Arrays.toString(child1_mutation));
-            System.out.println("Child 2 (HC applied): " + Arrays.toString(child2_mutation));
+                if (child_memeplex[3] == 1.0) {
+                    hillClimbingHeuristic.applyDBHCWithDoS(solutionPop, child1_mutation);
+                    hillClimbingHeuristic.applyDBHCWithDoS(solutionPop, child2_mutation);
+                } else if (child_memeplex[3] == 2.0) {
+                    hillClimbingHeuristic.applySAHCWithDoS(solutionPop, child1_mutation);
+                    hillClimbingHeuristic.applySAHCWithDoS(solutionPop, child2_mutation);
+                } else if (child_memeplex[3] == 3.0) {
+                    hillClimbingHeuristic.applyFAHCWithDoS(solutionPop, child1_mutation);
+                    hillClimbingHeuristic.applyFAHCWithDoS(solutionPop, child2_mutation);
+                } else {
+                    hillClimbingHeuristic.applyDBHCWithDoS(solutionPop, child1_mutation);
+                    hillClimbingHeuristic.applyDBHCWithDoS(solutionPop, child2_mutation);
+                }
 
-            System.out.println("Parent 1 index: " + p1_index + " | " + Arrays.toString(solutionPop.getSolution(p1_index)));
-            System.out.println("Parent 2 index: " + p2_index + " | " + Arrays.toString(solutionPop.getSolution(p2_index)));
-            System.out.println("Child 1 solution: " + Arrays.toString(child1_mutation));
-            System.out.println("Child 2 solution: " + Arrays.toString(child2_mutation));
+                int test[][] = replacementHeuristic.SteadyStateGAWithStrongElitism(solutionPop, p1_index, p2_index,
+                        child1_mutation, child2_mutation, child_memeplex);
 
-            int test[][] = replacementHeuristic.SteadyStateGAWithStrongElitism(solutionPop, p1_index, p2_index,
-                    child1_mutation, child2_mutation, child_memeplex);
-
-            System.out.println("Old solution population: " + solutionPop.getHighestObjectiveValue());
-            for (int[] solution : solutionPop.getSolutions()) System.out.println(Arrays.toString(solution));
-
-            solutionPop.setSolutions(test);
-
-            System.out.println("Updated solution population: " + solutionPop.getHighestObjectiveValue());
-            for (int[] solution : solutionPop.getSolutions()) System.out.println(Arrays.toString(solution));
+                solutionPop.setSolutions(test);
+            }
+            System.out.println("Trial #" + (trial_num + 1));
+            System.out.println(solutionPop.getHighestObjectiveValue());
+            for (int[] solution : solutionPop.getSolutions()) {
+                if (solutionPop.getObjectiveValue(solution) == solutionPop.getHighestObjectiveValue()) {
+                    System.out.println(Arrays.toString(solution));
+                    break;
+                }
+            }
         }
     }
 

@@ -6,11 +6,6 @@ public class ReplacementHeuristic {
 
     public int[][] SteadyStateGAWithStrongElitism(SolutionPop problem, int p1_index, int p2_index,
                                                   int[] c1_solution, int[] c2_solution, double[] child_memeplex) {
-        System.out.println("(Inside rep) Parent 1 index: " + p1_index + " | " + Arrays.toString(problem.getSolution(p1_index)));
-        System.out.println("(Inside rep) Parent 2 index: " + p2_index + " | " + Arrays.toString(problem.getSolution(p2_index)));
-        System.out.println("(Inside rep) Child 1 sol: " + Arrays.toString(c1_solution));
-        System.out.println("(Inside rep) Child 2 sol: " + Arrays.toString(c2_solution));
-
         int[][] p_and_c_fitnesses = {
                 {(int) problem.getObjectiveValue(p1_index), p1_index},
                 {(int) problem.getObjectiveValue(p2_index), p2_index},
@@ -18,13 +13,7 @@ public class ReplacementHeuristic {
                 {(int) problem.getObjectiveValue(c2_solution), -2}
         };
 
-        System.out.println("Parent and children array: ");
-        for (int[] p_and_c_ele : p_and_c_fitnesses) System.out.println(Arrays.toString(p_and_c_ele));
-        System.out.println("End of p_and_c array");
-
         int[][] p_and_c_highest = returnDetailsOfTwoHighestObjectiveValues(p_and_c_fitnesses);
-        System.out.println("Highest parent/child details: ");
-        for (int[] pc_ele : p_and_c_highest) System.out.println(Arrays.toString(pc_ele));
 
         //transform problem.getSolutions()
         int[][] pop_fitnesses = new int[problem.getPopSize()][2];
@@ -34,8 +23,6 @@ public class ReplacementHeuristic {
         }
 
         int[][] pop_lowest = returnDetailsOfTwoLowestObjectiveValues(pop_fitnesses);
-        System.out.println("Population lowest details: ");
-        for (int[] low_ele : pop_lowest) System.out.println(Arrays.toString(low_ele));
 
         int[][] new_pop = Arrays.copyOf(problem.getSolutions(), problem.getSolutions().length);
 

@@ -8,7 +8,7 @@ public class HillClimbingHeuristic {
         this.dos = dos;
     }
 
-    public void applyDBHCWithDoS(SolutionPop problem, int pop_index) {
+    public void applyDBHCWithDoS(SolutionPop problem, int[] solution) {
         int iterations;
 
         if (0.0 <= dos && dos < 0.2) {
@@ -28,27 +28,69 @@ public class HillClimbingHeuristic {
         }
 
         for (int i = 0; i < iterations; i++) {
-            int before = (int) problem.getObjectiveValue(pop_index);
-            applyDBHC(problem, pop_index);
-            int after = (int) problem.getObjectiveValue(pop_index);
+            int before = (int) problem.getObjectiveValue(solution);
+            applyDBHC(problem, solution);
+            int after = (int) problem.getObjectiveValue(solution);
             if (before >= after) {
                 break;
             }
         }
     }
 
-    public void applyDBHC(SolutionPop problem, int pop_index) {
-        double bestEval = problem.getObjectiveValue(pop_index);
+    public void applySAHCWithDoS(SolutionPop problem, int[] solution) {
+        int iterations;
 
-        int[] perm = generatePerm(problem.getSolution(pop_index).length);
+        if (0.0 <= dos && dos < 0.2) {
+            iterations = 1;
+        } else if (0.2 <= dos && dos < 0.4) {
+            iterations = 2;
+        } else if (0.4 <= dos && dos < 0.6) {
+            iterations = 3;
+        } else if (0.6 <= dos && dos < 0.8) {
+            iterations = 4;
+        } else if (0.8 <= dos && dos < 1) {
+            iterations = 5;
+        } else if (dos == 1) {
+            iterations = 6;
+        } else {
+            iterations = 1;
+        }
 
-        for (int j = 0; j < problem.getSolution(pop_index).length; j++) {
-            bitFlip(problem, perm[j], pop_index);
-            double tmpEval = problem.getObjectiveValue(pop_index);
-            if (tmpEval < bestEval) {
-                bitFlip(problem, perm[j], pop_index);
-            } else {
-                bestEval = tmpEval;
+        for (int i = 0; i < iterations; i++) {
+            int before = (int) problem.getObjectiveValue(solution);
+            applySAHC(problem, solution);
+            int after = (int) problem.getObjectiveValue(solution);
+            if (before >= after) {
+                break;
+            }
+        }
+    }
+
+    public void applyFAHCWithDoS(SolutionPop problem, int[] solution) {
+        int iterations;
+
+        if (0.0 <= dos && dos < 0.2) {
+            iterations = 1;
+        } else if (0.2 <= dos && dos < 0.4) {
+            iterations = 2;
+        } else if (0.4 <= dos && dos < 0.6) {
+            iterations = 3;
+        } else if (0.6 <= dos && dos < 0.8) {
+            iterations = 4;
+        } else if (0.8 <= dos && dos < 1) {
+            iterations = 5;
+        } else if (dos == 1) {
+            iterations = 6;
+        } else {
+            iterations = 1;
+        }
+
+        for (int i = 0; i < iterations; i++) {
+            int before = (int) problem.getObjectiveValue(solution);
+            applyFAHC(problem, solution);
+            int after = (int) problem.getObjectiveValue(solution);
+            if (before >= after) {
+                break;
             }
         }
     }
@@ -69,12 +111,36 @@ public class HillClimbingHeuristic {
         }
     }
 
-    public void bitFlip(SolutionPop problem, int index, int pop_index) {
-        if (problem.getSolution(pop_index)[index] == 0) {
-            problem.setSolutions(pop_index, index, 1);
-            return;
+    public void applySAHC(SolutionPop sol_pop, int[] solution) {
+        double bestEval = sol_pop.getObjectiveValue(solution);
+        int bestIndex = -1;
+        boolean improved = false;
+
+        for (int j = 0; j < solution.length; j++) {
+            bitFlip(solution, j);
+            double tmpEval = sol_pop.getObjectiveValue(solution);
+            if (tmpEval > bestEval) {
+                bestIndex = j;
+                bestEval = tmpEval;
+                improved = true;
+            }
+            bitFlip(solution, j);
         }
-        problem.setSolutions(pop_index, index, 0);
+        if (improved) bitFlip(solution, bestIndex);
+    }
+
+    public void applyFAHC(SolutionPop sol_pop, int[] solution) {
+        double bestEval = sol_pop.getObjectiveValue(solution);
+
+        for (int j = 0; j < solution.length; j++) {
+            bitFlip(solution, j);
+            double tmpEval = sol_pop.getObjectiveValue(solution);
+            if (tmpEval > bestEval) {
+                bestEval = tmpEval;
+            } else {
+                bitFlip(solution, j);
+            }
+        }
     }
 
     public void bitFlip(int[] solution, int index) {

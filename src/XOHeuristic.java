@@ -32,17 +32,70 @@ public class XOHeuristic {
         }
     }
 
+    public int[][] uniformXO(SolutionPop problem, int p1_index, int p2_index) {
+        int[] p1_solution = Arrays.copyOf(problem.getSolution(p1_index), problem.getSolution(p1_index).length);
+        int[] p2_solution = Arrays.copyOf(problem.getSolution(p2_index), problem.getSolution(p2_index).length);
+        int[][] child_solutions = new int[2][p1_solution.length];
+
+        for (int i = 0; i < p1_solution.length; i++) {
+            if (rand.nextDouble() < xo_rate) {
+                int temp = p1_solution[i];
+                p1_solution[i] = p2_solution[i];
+                p2_solution[i] = temp;
+            }
+        }
+
+        child_solutions[0] = p1_solution;
+        child_solutions[1] = p2_solution;
+
+        return child_solutions;
+    }
+
+    public int[][] doublePointXO(SolutionPop problem, int p1_index, int p2_index) {
+        int[] p1_solution = Arrays.copyOf(problem.getSolution(p1_index), problem.getSolution(p1_index).length);
+        int[] p2_solution = Arrays.copyOf(problem.getSolution(p2_index), problem.getSolution(p2_index).length);
+        int[][] child_solutions = new int[2][p1_solution.length];
+
+        int xo_point1 = rand.nextInt(p1_solution.length);
+        int xo_point2 = rand.nextInt(p1_solution.length);
+        while (xo_point1 == xo_point2) xo_point2 = rand.nextInt(p1_solution.length);
+
+        int[] indexes = new int[2];
+
+        if (xo_point1 < xo_point2) {
+            indexes[0] = xo_point1;
+            indexes[1] = xo_point2;
+        } else {
+            indexes[0] = xo_point2;
+            indexes[1] = xo_point1;
+        }
+
+        if (rand.nextDouble() < xo_rate) {
+            for (int i = 0; i <= indexes[0]; i++) {
+                int temp = p1_solution[i];
+                p1_solution[i] = p2_solution[i];
+                p2_solution[i] = temp;
+            }
+
+            for (int i = indexes[1]; i < p1_solution.length; i++) {
+                int temp = p1_solution[i];
+                p1_solution[i] = p2_solution[i];
+                p2_solution[i] = temp;
+            }
+        }
+
+        child_solutions[0] = p1_solution;
+        child_solutions[1] = p2_solution;
+
+        return child_solutions;
+    }
+
     public int[][] singlePointXO(SolutionPop problem, int p1_index, int p2_index) {
         int[] p1_solution = Arrays.copyOf(problem.getSolution(p1_index), problem.getSolution(p1_index).length);
         int[] p2_solution = Arrays.copyOf(problem.getSolution(p2_index), problem.getSolution(p2_index).length);
         int[][] child_solutions = new int[2][p1_solution.length];
 
-        System.out.println("Parent 1: " + Arrays.toString(p1_solution));
-        System.out.println("Parent 2: " + Arrays.toString(p2_solution));
-
         int xo_point = rand.nextInt(p1_solution.length);
-
-        System.out.println("Crossover point: " + xo_point);
 
         if (rand.nextDouble() < xo_rate) {
             for (int i = 0; i <= xo_point; i++) {
@@ -50,14 +103,10 @@ public class XOHeuristic {
                 p1_solution[i] = p2_solution[i];
                 p2_solution[i] = temp;
             }
-            System.out.println("Crossover performed.");
         }
 
         child_solutions[0] = p1_solution;
         child_solutions[1] = p2_solution;
-
-        System.out.println("Child 1: " + Arrays.toString(child_solutions[0]));
-        System.out.println("Child 2: " + Arrays.toString(child_solutions[1]));
 
         return child_solutions;
     }
