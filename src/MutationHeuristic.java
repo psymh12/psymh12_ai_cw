@@ -5,13 +5,37 @@ public class MutationHeuristic {
     private Random rand = new Random();
     private double mutation_rate;
     private double iom;
+    private double innovation_rate;
 
-    public MutationHeuristic(double mutation_rate) {
+    public MutationHeuristic(double mutation_rate, double innovation_rate) {
         this.mutation_rate = mutation_rate;
+        this.innovation_rate = innovation_rate;
     }
 
     public void setIom(double iom) {
         this.iom = iom;
+    }
+
+    public double[] mutateMemeplex(double[] memeplex) {
+        double[] copy = Arrays.copyOf(memeplex, memeplex.length);
+        double index0 = rand.nextInt(1, 4);
+        double index3 = rand.nextInt(1, 4);
+
+        if (rand.nextDouble() < innovation_rate) {
+            while (index0 == copy[0]) index0 = rand.nextInt(1, 4);
+            copy[0] = index0;
+        }
+
+        if (rand.nextDouble() < innovation_rate) copy[1] = rand.nextDouble();
+
+        if (rand.nextDouble() < innovation_rate) copy[2] = rand.nextDouble();
+
+        if (rand.nextDouble() < innovation_rate) {
+            while (index3 == copy[3]) index3 = rand.nextInt(1, 4);
+            copy[3] = index3;
+        }
+
+        return copy;
     }
 
     public int[] bitFlipWithIoM(int[] solution) {

@@ -37,7 +37,7 @@ public class Main {
         hillClimbingHeuristic = new HillClimbingHeuristic();
         selectionHeuristic = new SelectionHeuristic();
         xoHeuristic = new XOHeuristic(0.99);
-        mutationHeuristic = new MutationHeuristic(1.0 / solutionPop.getSolution(0).length);
+        mutationHeuristic = new MutationHeuristic(1.0 / solutionPop.getSolution(0).length, 0.25);
         replacementHeuristic = new ReplacementHeuristic();
 
         /*
@@ -62,8 +62,11 @@ public class Main {
             System.out.println("Parent 2 index = " + p2_index + " | " + Arrays.toString(solutionPop.getSolution(p2_index)));
 
             int[][] child_solutions = xoHeuristic.singlePointXO(solutionPop, p1_index, p2_index);
+            double[] child_memeplex = xoHeuristic.returnChildMemeplex(solutionPop, p1_index, p2_index); //
+
             int[] child1_mutation = mutationHeuristic.bitFlip(child_solutions[0]);
             int[] child2_mutation = mutationHeuristic.bitFlip(child_solutions[1]);
+            child_memeplex = mutationHeuristic.mutateMemeplex(child_memeplex); //
 
             System.out.println("Child 1 (mutated): " + Arrays.toString(child1_mutation));
             System.out.println("Child 2 (mutated): " + Arrays.toString(child2_mutation));
@@ -78,7 +81,8 @@ public class Main {
             System.out.println("Child 1 solution: " + Arrays.toString(child1_mutation));
             System.out.println("Child 2 solution: " + Arrays.toString(child2_mutation));
 
-            int test[][] = replacementHeuristic.SteadyStateGAWithStrongElitism(solutionPop, p1_index, p2_index, child1_mutation, child2_mutation);
+            int test[][] = replacementHeuristic.SteadyStateGAWithStrongElitism(solutionPop, p1_index, p2_index,
+                    child1_mutation, child2_mutation, child_memeplex);
 
             System.out.println("Old solution population: " + solutionPop.getHighestObjectiveValue());
             for (int[] solution : solutionPop.getSolutions()) System.out.println(Arrays.toString(solution));
@@ -88,27 +92,6 @@ public class Main {
             System.out.println("Updated solution population: " + solutionPop.getHighestObjectiveValue());
             for (int[] solution : solutionPop.getSolutions()) System.out.println(Arrays.toString(solution));
         }
-
-        // GA progress ends here
-
-        /*
-        System.out.println();
-
-        int[] solution = solutionPop.getSolution(2);
-        System.out.println(Arrays.toString(solution));
-        System.out.println(solutionPop.getObjectiveValue(2));
-
-        hillClimbingHeuristic.applyDHBC(solutionPop, 2);
-
-        solution = solutionPop.getSolution(2);
-        System.out.println(Arrays.toString(solution));
-        System.out.println(solutionPop.getObjectiveValue(2));
-
-        solutions = solutionPop.getSolutions();
-
-        System.out.println();
-        for(int[] temp_sol : solutions) System.out.println(Arrays.toString(temp_sol));
-         */
     }
 
     public static ArrayList<ArrayList<Double>> readInstance(String pathExtension) throws IOException {

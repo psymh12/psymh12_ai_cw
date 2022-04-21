@@ -1,10 +1,12 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
 public class SolutionPop {
     private ArrayList<ArrayList<Double>> instances;
     private int[][] solutions;
+    private double[][] meme_store;
     private int pop_size;
     private double n;
     private double W;
@@ -23,6 +25,15 @@ public class SolutionPop {
 
         solutions = new int[pop_size][(int) n];
         for (int i = 0; i < pop_size; i++) solutions[i] = generateSolution();
+
+        meme_store = new double[pop_size][4];
+        for (int x = 0; x < pop_size; x++) {
+            double[] meme_element = {(double) rand.nextInt(1, 4), rand.nextDouble(), rand.nextDouble(),
+                    (double) rand.nextInt(1, 4)};
+
+            meme_store[x] = meme_element;
+        }
+        for (double[] meme_ele : meme_store) System.out.println(Arrays.toString(meme_ele));
     }
 
     public ArrayList<ArrayList<Double>> getInstances() {
@@ -33,12 +44,20 @@ public class SolutionPop {
         return solutions[pop_index];
     }
 
+    public double[] getMemeplex(int meme_index) {
+        return meme_store[meme_index];
+    }
+
     public int[][] getSolutions() {
         return solutions;
     }
 
     public void setSolutions(int[][] new_solutions) {
         solutions = new_solutions;
+    }
+
+    public void setMemeplex(double[] new_memeplex, int meme_index) {
+        meme_store[meme_index] = new_memeplex;
     }
 
     public double getN() {

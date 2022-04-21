@@ -5,7 +5,7 @@ public class ReplacementHeuristic {
     private Random rand = new Random();
 
     public int[][] SteadyStateGAWithStrongElitism(SolutionPop problem, int p1_index, int p2_index,
-                                                  int[] c1_solution, int[] c2_solution) {
+                                                  int[] c1_solution, int[] c2_solution, double[] child_memeplex) {
         System.out.println("(Inside rep) Parent 1 index: " + p1_index + " | " + Arrays.toString(problem.getSolution(p1_index)));
         System.out.println("(Inside rep) Parent 2 index: " + p2_index + " | " + Arrays.toString(problem.getSolution(p2_index)));
         System.out.println("(Inside rep) Child 1 sol: " + Arrays.toString(c1_solution));
@@ -43,18 +43,24 @@ public class ReplacementHeuristic {
             if (i == pop_lowest[0][1]) {
                 if (p_and_c_highest[0][1] == -1) {
                     new_pop[i] = c1_solution;
+                    problem.setMemeplex(child_memeplex, i);
                 } else if (p_and_c_highest[0][1] == -2) {
                     new_pop[i] = c2_solution;
+                    problem.setMemeplex(child_memeplex, i);
                 } else {
                     new_pop[i] = new_pop[p_and_c_highest[0][1]];
+                    problem.setMemeplex(problem.getMemeplex(p_and_c_highest[0][1]), i);
                 }
             } else if (i == pop_lowest[1][1]) {
                 if (p_and_c_highest[1][1] == -1) {
                     new_pop[i] = c1_solution;
+                    problem.setMemeplex(child_memeplex, i);
                 } else if (p_and_c_highest[1][1] == -2) {
                     new_pop[i] = c2_solution;
+                    problem.setMemeplex(child_memeplex, i);
                 } else {
                     new_pop[i] = new_pop[p_and_c_highest[1][1]];
+                    problem.setMemeplex(problem.getMemeplex(p_and_c_highest[1][1]), i);
                 }
             }
         }
