@@ -48,7 +48,7 @@ public class Main {
      * @param args Command line input.
      */
     public static void main(String[] args) {
-        String instanceName = "hidden2_7_50";
+        String instanceName = "hidden4_15_375";
         int numberOf = 100;
         double[][] best_current_values = new double[150][2];
 
