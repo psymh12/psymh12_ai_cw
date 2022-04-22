@@ -8,5 +8,3 @@
 8. Expand folders and navigate to the Main class inside src folder
 9. Double-click on Main class
 10. Select "Run..." from the Run drop-down menu, and select to run Main
-
-NOTE: PLEASE IGNORE THE README FOLDER THAT IS INSIDE THE ZIP FILE
