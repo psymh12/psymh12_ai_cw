@@ -1,9 +1,26 @@
 import java.util.Arrays;
 import java.util.Random;
 
+/**
+ * Used for applying replacement strategies to a population.
+ */
 public class ReplacementHeuristic {
+    /**
+     * Object of Random object.
+     */
     private Random rand = new Random();
 
+    /**
+     * <p>Replaces worst 2 of a population with the best 2 out of parent and child solutions.</p>
+     *
+     * @param problem        Used to get information from the population, as well as to set the values of memeplexes.
+     * @param p1_index       Index of parent 1 in the population.
+     * @param p2_index       Index of parent 2 in the population.
+     * @param c1_solution    Binary representation of child 1 solution.
+     * @param c2_solution    Binary representation of child 2 solution.
+     * @param child_memeplex Memeplex shared by child solutions.
+     * @return new population after replacement has been applied.
+     */
     public int[][] SteadyStateGAWithStrongElitism(SolutionPop problem, int p1_index, int p2_index,
                                                   int[] c1_solution, int[] c2_solution, double[] child_memeplex) {
         int[][] p_and_c_fitnesses = {
@@ -55,6 +72,13 @@ public class ReplacementHeuristic {
         return new_pop;
     }
 
+    /**
+     * <p>Returns array of objective value and index (if a child solution is selected than index value is set to either -1
+     * or -2) value pairs.</p>
+     *
+     * @param f_and_i Array containing fitness values and index values.
+     * @return Objective value and index value details of the two element in the given list with highest objective value.
+     */
     public int[][] returnDetailsOfTwoHighestObjectiveValues(int[][] f_and_i) {
         int[][] temp = Arrays.copyOf(f_and_i, f_and_i.length);
         int[][] highest_details = new int[2][2];
@@ -66,6 +90,13 @@ public class ReplacementHeuristic {
         return highest_details;
     }
 
+    /**
+     * <p>Returns array of objective value and index value pairs.</p>
+     *
+     * @param f_and_i Array containing fitness values and index values.
+     * @return array of objective value and index value details of two elements in population with the two lowest objective
+     * values.
+     */
     public int[][] returnDetailsOfTwoLowestObjectiveValues(int[][] f_and_i) {
         int[][] temp = Arrays.copyOf(f_and_i, f_and_i.length);
         int[][] lowest_details = new int[2][2];
@@ -78,6 +109,12 @@ public class ReplacementHeuristic {
     }
 
 
+    /**
+     * <p>Gives the objective value and index value of the highest objective value element in a given array.</p>
+     *
+     * @param f_and_i Array containing fitness values and index values.
+     * @return array containing details of highest objective value element in given array.
+     */
     public int[] returnDetailsWithHighestObjectiveValues(int[][] f_and_i) {
         int[][] temp = Arrays.copyOf(f_and_i, f_and_i.length);
         int largest = 0;
@@ -92,6 +129,12 @@ public class ReplacementHeuristic {
         return failed_search;
     }
 
+    /**
+     * <p>Gives the objective value and index value of the lowest objective value element in a given array.</p>
+     *
+     * @param f_and_i Array containing fitness values and index values.
+     * @return array containing details of lowest objective value element in given array.
+     */
     public int[] returnDetailsWithLowestObjectiveValues(int[][] f_and_i) {
         int[][] temp = Arrays.copyOf(f_and_i, f_and_i.length);
 
@@ -107,6 +150,13 @@ public class ReplacementHeuristic {
         return failed_search;
     }
 
+    /**
+     * <p>Returns a copy of a given array which no longer contains a target value.</p>
+     *
+     * @param f_and_i array to be modified.
+     * @param target  target value to remove.
+     * @return version of input array that no longer contains target value.
+     */
     public int[][] deleteDetails(int[][] f_and_i, int target) {
         int[][] temp = Arrays.copyOf(f_and_i, f_and_i.length);
         int[][] modified = new int[f_and_i.length - 1][2];

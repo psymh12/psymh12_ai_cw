@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"<Unnamed>","l":"HillClimbingHeuristic"},{"p":"<Unnamed>","l":"Main"},{"p":"<Unnamed>","l":"MutationHeuristic"},{"p":"<Unnamed>","l":"ReplacementHeuristic"},{"p":"<Unnamed>","l":"SelectionHeuristic"},{"p":"<Unnamed>","l":"SolutionPop"},{"p":"<Unnamed>","l":"XOHeuristic"}];updateSearchResults();

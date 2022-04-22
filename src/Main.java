@@ -1,24 +1,57 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Executes multi-memetic algorithm on test instance, handles output to terminal, and also handles output to text files.
+ */
 public class Main {
+    /**
+     * Contains details of profit-weight pairs given in the test instances.
+     */
     private static ArrayList<ArrayList<Double>> instances;
+    /**
+     * Object of Random class.
+     */
     private static Random rand = new Random();
+    /**
+     * Object of SolutionPop class.
+     */
     private static SolutionPop solutionPop;
+    /**
+     * Object of HillClimbingHeuristic class.
+     */
     private static HillClimbingHeuristic hillClimbingHeuristic;
+    /**
+     * Object of SelectionHeuristic class.
+     */
     private static SelectionHeuristic selectionHeuristic;
+    /**
+     * Object of XOHeuristic class.
+     */
     private static XOHeuristic xoHeuristic;
+    /**
+     * Object of MutationHeuristic class.
+     */
     private static MutationHeuristic mutationHeuristic;
+    /**
+     * Object of ReplacementHeuristic class.
+     */
     private static ReplacementHeuristic replacementHeuristic;
 
+    /**
+     * <p>Runs a multi-memetic algorithm on a particular test instance. Details are output to both the terminal and
+     * text files.</p>
+     *
+     * @param args Command line input.
+     */
     public static void main(String[] args) {
-        String instanceName = "hidden4_15_375";
+        String instanceName = "hidden2_7_50";
+        int numberOf = 100;
+        double[][] best_current_values = new double[150][2];
+
         for (int trial_num = 0; trial_num < 5; trial_num++) {
             try {
                 instances = readInstance(instanceName + ".txt");
@@ -79,6 +112,9 @@ public class Main {
                         child1_mutation, child2_mutation, child_memeplex);
 
                 solutionPop.setSolutions(test);
+
+                best_current_values[i][0] = solutionPop.getHighestObjectiveValue();
+                best_current_values[i][1] = solutionPop.getLowestObjectiveValue();
             }
             System.out.println("Trial #" + (trial_num + 1));
             System.out.println(solutionPop.getHighestObjectiveValue());
@@ -88,9 +124,37 @@ public class Main {
                     break;
                 }
             }
+            writeBestCurrent(instanceName, trial_num + 1, best_current_values, numberOf);
         }
     }
 
+    /**
+     * <p>Writes the best and current values of each generation (up until a certain generation) into a text file.</p>
+     *
+     * @param instanceName Instance name that algorithm is being applied to.
+     * @param trialID      Trial number.
+     * @param bc           Array of best and current values.
+     * @param numberOf     Controls which generation to stop writing to the file at.
+     */
+    public static void writeBestCurrent(String instanceName, int trialID, double[][] bc, int numberOf) {
+        try {
+            FileWriter myWriter = new FileWriter(instanceName + "_" + trialID + "_output.txt");
+            for (int i = 0; i < numberOf; i++) {
+                myWriter.write(bc[i][0] + " " + bc[i][1] + "\n");
+            }
+            myWriter.close();
+        } catch (IOException e) {
+            System.out.println("File write failed.");
+        }
+    }
+
+    /**
+     * <p>Processes text file of a test instance and returns it as a nested ArrayList of profit-weight paired values.</p>
+     *
+     * @param pathExtension Name of test instance to take values from.
+     * @return Nested ArrayList of Doubles that contains profit-weight paired values.
+     * @throws IOException if unable to successfully read values from instance.
+     */
     public static ArrayList<ArrayList<Double>> readInstance(String pathExtension) throws IOException {
         String path = "src/" + pathExtension;
         ArrayList<ArrayList<Double>> instance = new ArrayList<>();

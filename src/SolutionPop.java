@@ -2,15 +2,45 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+/**
+ * Object used for storing the population of solutions, as well as providing functions like objective value calculation.
+ */
 public class SolutionPop {
+    /**
+     * Nested ArrayList containing profit-weight paired values from test instance.
+     */
     private ArrayList<ArrayList<Double>> instances;
+    /**
+     * Array containing the population of solutions.
+     */
     private int[][] solutions;
+    /**
+     * Array containing memeplexes.
+     */
     private double[][] meme_store;
+    /**
+     * Contains number of solutions within the population.
+     */
     private int pop_size;
+    /**
+     * Number of profit-weight pairs in test instance.
+     */
     private double n;
+    /**
+     * Maximum allowable weight.
+     */
     private double W;
+    /**
+     * Object of Random class.
+     */
     private Random rand = new Random();
 
+    /**
+     * <p>Constructor of SolutionPop. Extracts values of n and W from instances. Initialises pop_size, solutions, and
+     * meme_store.</p>
+     *
+     * @param instances Nested ArrayList containing profit-weight paired values from test instance.
+     */
     public SolutionPop(ArrayList<ArrayList<Double>> instances) {
         this.instances = instances;
 
@@ -34,54 +64,86 @@ public class SolutionPop {
         }
     }
 
+    /**
+     * <p>Returns instances</p>
+     *
+     * @return instances.
+     */
     public ArrayList<ArrayList<Double>> getInstances() {
         return instances;
     }
 
+    /**
+     * <p>Returns the solution at a particular index in the population.</p>
+     *
+     * @param pop_index Index of wanted solution.
+     * @return wanted solution.
+     */
     public int[] getSolution(int pop_index) {
         return solutions[pop_index];
     }
 
+    /**
+     * <p>Returns the full array of memeplexes.</p>
+     *
+     * @return array of memeplexes.
+     */
     public double[][] getMemeStore() {
         return meme_store;
     }
 
+    /**
+     * <p>Returns memeplex at a particular index in the meme store.</p>
+     *
+     * @param meme_index Index of wanted memeplex.
+     * @return wanted memeplex.
+     */
     public double[] getMemeplex(int meme_index) {
         return meme_store[meme_index];
     }
 
+    /**
+     * <p>Returns an array containing all the solutions in the population.</p>
+     *
+     * @return array of all solutions in the population.
+     */
     public int[][] getSolutions() {
         return solutions;
     }
 
+    /**
+     * <p>Replaces the old population entirely with a new population.</p>
+     *
+     * @param new_solutions new population to replace old population with.
+     */
     public void setSolutions(int[][] new_solutions) {
         solutions = new_solutions;
     }
 
+    /**
+     * <p>Replaces memeplex at an index of the meme_store with another memeplex.</p>
+     *
+     * @param new_memeplex new memeplex to replace old memeplex with.
+     * @param meme_index   index of memeplex to be replaced.
+     */
     public void setMemeplex(double[] new_memeplex, int meme_index) {
         meme_store[meme_index] = new_memeplex;
     }
 
-    public double getN() {
-        return n;
-    }
-
-    public double getW() {
-        return W;
-    }
-
+    /**
+     * <p>Returns the number of solutions in the population.</p>
+     *
+     * @return pop_size
+     */
     public int getPopSize() {
         return pop_size;
     }
 
-    public void setSolutions(int pop_index, int locus, int num) {
-        solutions[pop_index][locus] = num;
-    }
-
-    public void setSolutions(int index, int[] in_solution) {
-        solutions[index] = in_solution;
-    }
-
+    /**
+     * <p>Returns a randomly generated solution which has a length determined by the variable n.</p>
+     *
+     * @return randomly generated solution.
+     */
     public int[] generateSolution() {
         int[] rand_solution = new int[(int) n];
         for (int i = 0; i < n; i++) {
@@ -95,6 +157,11 @@ public class SolutionPop {
         return rand_solution;
     }
 
+    /**
+     * <p>Returns highest objective value in the population.</p>
+     *
+     * @return highest objective value in the population.
+     */
     public double getHighestObjectiveValue() {
         ArrayList<Double> fitness_vals = new ArrayList<>();
         for (int i = 0; i < solutions.length; i++) {
@@ -103,6 +170,25 @@ public class SolutionPop {
         return Collections.max(fitness_vals);
     }
 
+    /**
+     * <p>Returns lowest objective value in the population.</p>
+     *
+     * @return lowest objective value in the population.
+     */
+    public double getLowestObjectiveValue() {
+        ArrayList<Double> fitness_vals = new ArrayList<>();
+        for (int i = 0; i < solutions.length; i++) {
+            fitness_vals.add(getObjectiveValue(i));
+        }
+        return Collections.min(fitness_vals);
+    }
+
+    /**
+     * <p>Returns the objective value of a solution at a specified index of the population.</p>
+     *
+     * @param pop_index Index of solution to be analysed.
+     * @return returns objective value of solution at given index of the population.
+     */
     public double getObjectiveValue(int pop_index) {
         double score = 0.0;
         double weight = 0.0;
@@ -119,6 +205,12 @@ public class SolutionPop {
         return score;
     }
 
+    /**
+     * <p>Returns objective value of a given solution.</p>
+     *
+     * @param input_solution solution to be analysed.
+     * @return objective value of given solution.
+     */
     public double getObjectiveValue(int[] input_solution) {
         double score = 0.0;
         double weight = 0.0;

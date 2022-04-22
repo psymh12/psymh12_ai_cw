@@ -1,13 +1,34 @@
 import java.util.Random;
 
+/**
+ * Used for applying hill climbing heuristics to solutions.
+ */
 public class HillClimbingHeuristic {
+    /**
+     * Object of Random class.
+     */
     private Random rand = new Random();
+    /**
+     * Variable controlling Depth of Search.
+     */
     private double dos;
 
+    /**
+     * <p>Setter function used for changing value of dos (Depth of Search) variable.</p>
+     *
+     * @param dos Value to set Depth of Search to.
+     */
     public void setDos(double dos) {
         this.dos = dos;
     }
 
+    /**
+     * <p>Used for applying Davis Bit Hill Climbing (DBHC) to a solution with potentially more than 1 passes
+     * depending on the value of dos (Depth of Search).</p>
+     *
+     * @param problem  Used for calculating objective values to decide whether to terminate further application of DBHC.
+     * @param solution Solution that DBHC is being applied to.
+     */
     public void applyDBHCWithDoS(SolutionPop problem, int[] solution) {
         int iterations;
 
@@ -37,6 +58,13 @@ public class HillClimbingHeuristic {
         }
     }
 
+    /**
+     * <p>Used for applying Steepest Ascent Hill Climbing (SAHC) to a solution with potentially more than 1 passes
+     * depending on the value of dos (Depth of Search).</p>
+     *
+     * @param problem  Used for calculating objective values to decide whether to terminate further application of SAHC.
+     * @param solution Solution that SAHC is being applied to.
+     */
     public void applySAHCWithDoS(SolutionPop problem, int[] solution) {
         int iterations;
 
@@ -66,6 +94,13 @@ public class HillClimbingHeuristic {
         }
     }
 
+    /**
+     * <p>Used for applying First Ascent Hill Climbing (FAHC) to a solution with potentially more than 1 passes
+     * depending on the value of dos (Depth of Search).</p>
+     *
+     * @param problem  Used for calculating objective values to decide whether to terminate further application of FAHC.
+     * @param solution Solution that FAHC is being applied to.
+     */
     public void applyFAHCWithDoS(SolutionPop problem, int[] solution) {
         int iterations;
 
@@ -95,6 +130,12 @@ public class HillClimbingHeuristic {
         }
     }
 
+    /**
+     * <p>Applies a single pass of Davis Bit Hill Climbing (DBHC) to a solution.</p>
+     *
+     * @param sol_pop  Used for calculating objective values to decide whether to terminate further application of DBHC.
+     * @param solution Solution that DBHC is being applied to.
+     */
     public void applyDBHC(SolutionPop sol_pop, int[] solution) {
         double bestEval = sol_pop.getObjectiveValue(solution);
 
@@ -111,6 +152,12 @@ public class HillClimbingHeuristic {
         }
     }
 
+    /**
+     * <p>Applies a single pass of Steepest Ascent Hill Climbing (SAHC) to a solution.</p>
+     *
+     * @param sol_pop  Used for calculating objective values to decide whether to terminate further application of SAHC.
+     * @param solution Solution that SAHC is being applied to.
+     */
     public void applySAHC(SolutionPop sol_pop, int[] solution) {
         double bestEval = sol_pop.getObjectiveValue(solution);
         int bestIndex = -1;
@@ -129,6 +176,12 @@ public class HillClimbingHeuristic {
         if (improved) bitFlip(solution, bestIndex);
     }
 
+    /**
+     * <p>Applies a single pass of First Ascent Hill Climbing (FAHC) to a solution.</p>
+     *
+     * @param sol_pop  Used for calculating objective values to decide whether to terminate further application of FAHC.
+     * @param solution Solution that FAHC is being applied to.
+     */
     public void applyFAHC(SolutionPop sol_pop, int[] solution) {
         double bestEval = sol_pop.getObjectiveValue(solution);
 
@@ -143,6 +196,12 @@ public class HillClimbingHeuristic {
         }
     }
 
+    /**
+     * <p>Flips a bit in an index of a solution to either 0 or 1 depending on it's current value.</p>
+     *
+     * @param solution Solution that is having one of it's bits flipped to 0/1.
+     * @param index    Index of bit in solution that will be flipped to 0/1.
+     */
     public void bitFlip(int[] solution, int index) {
         if (solution[index] == 0) {
             solution[index] = 1;
@@ -151,6 +210,12 @@ public class HillClimbingHeuristic {
         solution[index] = 0;
     }
 
+    /**
+     * <p>Generates an array of numbers where each element is in range [0..array_length-1] and every element is unique.</p>
+     *
+     * @param length Length of array to be generated.
+     * @return a permutation of numbers.
+     */
     public int[] generatePerm(int length) {
         int[] used_nums = new int[length];
         int rand_num = -1;
@@ -170,6 +235,13 @@ public class HillClimbingHeuristic {
         return used_nums;
     }
 
+    /**
+     * <p>Returns true or false depending on whether a target number is within a given array.</p>
+     *
+     * @param n   Target number.
+     * @param arr Array to be searched.
+     * @return a boolean showing whether the target number is within the given array.
+     */
     public boolean in_arr_check(int n, int[] arr) {
         for (int element : arr) if (element == n) return true;
         return false;
